@@ -14,10 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { FirebaseError } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 export const Page = () => {
   const [email, setEmail] = useState<string>("");
+  const { push } = useRouter();
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const toast = useToast();
@@ -35,6 +37,7 @@ export const Page = () => {
         status: "success",
         position: "top",
       });
+      push("/chat");
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);

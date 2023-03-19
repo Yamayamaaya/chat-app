@@ -19,11 +19,13 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
+import { useRouter } from "next/router";
 
 export const Page = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { push } = useRouter();
   const toast = useToast();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -44,6 +46,7 @@ export const Page = () => {
         position: "top",
       });
       setPassword("");
+      push("/chat");
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);
