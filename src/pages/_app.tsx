@@ -4,6 +4,7 @@ import { initializeFirebaseApp } from "@src/lib/firebase/firebase";
 import { getApp } from "firebase/app";
 import { AuthProvider } from "@src/feature/auth/provider/AuthProvider";
 import { Header } from "@src/component/Header/Header";
+import { Footer } from "@src/component/Footer/Footer";
 
 initializeFirebaseApp();
 function MyApp({ Component, pageProps }: AppProps) {
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <AuthProvider>
         <Header />
         <Component {...pageProps} />
+        <Footer />
       </AuthProvider>
     </ChakraProvider>
   );

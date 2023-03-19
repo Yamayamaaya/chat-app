@@ -45,13 +45,7 @@ export const Header = () => {
       <Container maxW={"container.lg"}>
         <Flex>
           <Link href={"/"} passHref>
-            <chakra.a
-              _hover={{
-                opacity: 0.8,
-              }}
-            >
-              <Heading color={"white"}>Firebase Realtime Chat</Heading>
-            </chakra.a>
+            <Heading color={"white"}>Firebase Realtime Chat</Heading>
           </Link>
           <Spacer aria-hidden />
           {user ? (
@@ -65,9 +59,7 @@ export const Header = () => {
             </Menu>
           ) : (
             <Link href={"/signin"} passHref>
-              <Button as={"a"} colorScheme={"teal"}>
-                サインイン
-              </Button>
+              サインイン
             </Link>
           )}
         </Flex>
