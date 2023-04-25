@@ -14,12 +14,14 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { getDatabase, onChildAdded, push, ref } from "@firebase/database";
 import { FirebaseError } from "@firebase/util";
 import { AuthGuard } from "@src/feature/auth/component/AuthGuard/AuthGuard";
+import { getAuth } from "firebase/auth";
 
 type MessageProps = {
   message: string;
+  uid: string;
 };
 
-const Message = ({ message }: MessageProps) => {
+const Message = ({ message,uid }: MessageProps) => {
   return (
     <Flex alignItems={"start"}>
       <Avatar />
@@ -27,22 +29,27 @@ const Message = ({ message }: MessageProps) => {
         <Text bgColor={"gray.200"} rounded={"md"} px={2} py={1}>
           {message}
         </Text>
+        <p>{uid}</p>
       </Box>
     </Flex>
   );
 };
 
+
 export const Page = () => {
   const messagesElementRef = useRef<HTMLDivElement | null>(null);
   const [message, setMessage] = useState<string>("");
+  
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const db = getDatabase();
+      const auth = getAuth();
       const dbRef = ref(db, "chat");
       await push(dbRef, {
         message,
+        uid: auth.currentUser?.uid,
       });
       setMessage("");
     } catch (e) {
@@ -52,7 +59,7 @@ export const Page = () => {
     }
   };
 
-  const [chats, setChats] = useState<{ message: string }[]>([]);
+  const [chats, setChats] = useState<{ message: string,uid:string }[]>([]);
 
   useEffect(() => {
     try {
@@ -60,7 +67,8 @@ export const Page = () => {
       const dbRef = ref(db, "chat");
       return onChildAdded(dbRef, (snapshot) => {
         const message = String(snapshot.val()["message"] ?? "");
-        setChats((prev) => [...prev, { message }]);
+        const uid = String(snapshot.val()["uid"] ?? "");
+        setChats((prev) => [...prev, { message,uid}]);
       });
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -95,7 +103,7 @@ export const Page = () => {
           ref={messagesElementRef}
         >
           {chats.map((chat, index) => (
-            <Message message={chat.message} key={`ChatMessage_${index}`} />
+            <Message message={chat.message} uid = {chat.uid} key={`ChatMessage_${index}`} />
           ))}
         </Flex>
         <Spacer aria-hidden />
