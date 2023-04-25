@@ -41,6 +41,11 @@ export const Page = () => {
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);
+        toast({
+          title: "メールアドレスまたはパスワードが間違っています。",
+          status: "error",
+          position: "top",
+        });
       }
     } finally {
       setIsLoading(false);

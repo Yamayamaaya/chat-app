@@ -51,6 +51,7 @@ export const Header = () => {
             <Menu>
               <MenuButton>
                 <Avatar flexShrink={0} width={10} height={10} />
+                <p>{user.displayName}</p>
               </MenuButton>
               <MenuList py={0}>
                 <MenuItem onClick={handleSignOut}>サインアウト</MenuItem>

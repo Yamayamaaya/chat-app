@@ -18,10 +18,10 @@ import { getAuth } from "firebase/auth";
 
 type MessageProps = {
   message: string;
-  uid: string;
+  displayName: string;
 };
 
-const Message = ({ message,uid }: MessageProps) => {
+const Message = ({ message,displayName }: MessageProps) => {
   return (
     <Flex alignItems={"start"}>
       <Avatar />
@@ -29,7 +29,7 @@ const Message = ({ message,uid }: MessageProps) => {
         <Text bgColor={"gray.200"} rounded={"md"} px={2} py={1}>
           {message}
         </Text>
-        <p>{uid}</p>
+        <p>{displayName}</p>
       </Box>
     </Flex>
   );
@@ -49,7 +49,7 @@ export const Page = () => {
       const dbRef = ref(db, "chat");
       await push(dbRef, {
         message,
-        uid: auth.currentUser?.uid,
+        displayName: auth.currentUser?.displayName,
       });
       setMessage("");
     } catch (e) {
@@ -59,16 +59,17 @@ export const Page = () => {
     }
   };
 
-  const [chats, setChats] = useState<{ message: string,uid:string }[]>([]);
+  const [chats, setChats] = useState<{ message: string,displayName:string }[]>([]);
 
   useEffect(() => {
     try {
       const db = getDatabase();
       const dbRef = ref(db, "chat");
       return onChildAdded(dbRef, (snapshot) => {
+        console.log(snapshot.val());
         const message = String(snapshot.val()["message"] ?? "");
-        const uid = String(snapshot.val()["uid"] ?? "");
-        setChats((prev) => [...prev, { message,uid}]);
+        const displayName = String(snapshot.val()["displayName"] ?? "");
+        setChats((prev) => [...prev, { message,displayName}]);
       });
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -103,7 +104,7 @@ export const Page = () => {
           ref={messagesElementRef}
         >
           {chats.map((chat, index) => (
-            <Message message={chat.message} uid = {chat.uid} key={`ChatMessage_${index}`} />
+            <Message message={chat.message} displayName = {chat.displayName} key={`ChatMessage_${index}`} />
           ))}
         </Flex>
         <Spacer aria-hidden />
