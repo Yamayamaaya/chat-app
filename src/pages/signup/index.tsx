@@ -17,13 +17,16 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { useRouter } from "next/router";
 
+
 export const Page = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { push } = useRouter();
   const toast = useToast();
@@ -46,6 +49,10 @@ export const Page = () => {
         position: "top",
       });
       setPassword("");
+      updateProfile(userCredential.user, {
+				displayName: displayName,
+			})
+      setDisplayName("");
       push("/chat");
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -76,6 +83,16 @@ export const Page = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                }}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>表示名</FormLabel>
+              <Input
+                name={"displayName"}
+                value={displayName}
+                onChange={(e) => {
+                  setDisplayName(e.target.value);
                 }}
               />
             </FormControl>

@@ -14,12 +14,14 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { getDatabase, onChildAdded, push, ref } from "@firebase/database";
 import { FirebaseError } from "@firebase/util";
 import { AuthGuard } from "@src/feature/auth/component/AuthGuard/AuthGuard";
+import { getAuth } from "firebase/auth";
 
 type MessageProps = {
   message: string;
+  displayName: string;
 };
 
-const Message = ({ message }: MessageProps) => {
+const Message = ({ message,displayName }: MessageProps) => {
   return (
     <Flex alignItems={"start"}>
       <Avatar />
@@ -27,22 +29,27 @@ const Message = ({ message }: MessageProps) => {
         <Text bgColor={"gray.200"} rounded={"md"} px={2} py={1}>
           {message}
         </Text>
+        <p>{displayName}</p>
       </Box>
     </Flex>
   );
 };
 
+
 export const Page = () => {
   const messagesElementRef = useRef<HTMLDivElement | null>(null);
   const [message, setMessage] = useState<string>("");
+  
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const db = getDatabase();
+      const auth = getAuth();
       const dbRef = ref(db, "chat");
       await push(dbRef, {
         message,
+        displayName: auth.currentUser?.displayName,
       });
       setMessage("");
     } catch (e) {
@@ -52,15 +59,17 @@ export const Page = () => {
     }
   };
 
-  const [chats, setChats] = useState<{ message: string }[]>([]);
+  const [chats, setChats] = useState<{ message: string,displayName:string }[]>([]);
 
   useEffect(() => {
     try {
       const db = getDatabase();
       const dbRef = ref(db, "chat");
       return onChildAdded(dbRef, (snapshot) => {
+        console.log(snapshot.val());
         const message = String(snapshot.val()["message"] ?? "");
-        setChats((prev) => [...prev, { message }]);
+        const displayName = String(snapshot.val()["displayName"] ?? "");
+        setChats((prev) => [...prev, { message,displayName}]);
       });
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -95,7 +104,7 @@ export const Page = () => {
           ref={messagesElementRef}
         >
           {chats.map((chat, index) => (
-            <Message message={chat.message} key={`ChatMessage_${index}`} />
+            <Message message={chat.message} displayName = {chat.displayName} key={`ChatMessage_${index}`} />
           ))}
         </Flex>
         <Spacer aria-hidden />
