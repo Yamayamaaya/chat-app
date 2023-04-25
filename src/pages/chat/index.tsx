@@ -68,7 +68,6 @@ export const Page = () => {
       }
       return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -87,6 +86,7 @@ export const Page = () => {
         minHeight={0}
       >
         <Heading>チャット</Heading>
+        {/* TODO:チャット送信者がわかる  */}
         <Spacer flex={"none"} height={4} aria-hidden />
         <Flex
           flexDirection={"column"}

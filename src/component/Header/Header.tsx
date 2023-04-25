@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   chakra,
   Container,
   Flex,

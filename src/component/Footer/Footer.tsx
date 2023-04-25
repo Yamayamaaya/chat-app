@@ -1,5 +1,5 @@
 import { chakra, Container, Flex, Link } from "@chakra-ui/react";
-
+// TODO：フッター整理
 export const Footer = () => {
   return (
     <chakra.footer py={4} bgColor={"blue.600"} color={"white"}>
